@@ -19,3 +19,6 @@ App label: `Clock`
 A workflow is included at `.github/workflows/build-apk.yml`. Push to GitHub or run it manually from **Actions → Build Clock APK → Run workflow**. When it completes, open the workflow run and download the `Clock-debug-apk` artifact. The APK is a debug build.
 
 The clear action additionally cleans only Clock's own private cache directory (`getCacheDir()`). It does not scan or delete arbitrary root folders or other apps' package history.
+
+## CI SDK note
+The workflow uses `android-actions/setup-android@v4` and explicitly installs platform-tools, Android API 35, and Build Tools 35.0.0. This avoids the retired SDK package named `tools` that caused the prior workflow to fail during SDK setup.

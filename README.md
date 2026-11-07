@@ -14,3 +14,8 @@ The app runs `su -c "logcat -c"`. This clears current logcat buffers only. It do
 
 Package/application ID: `com.clock.android`
 App label: `Clock`
+
+## GitHub Actions build
+A workflow is included at `.github/workflows/build-apk.yml`. Push to GitHub or run it manually from **Actions → Build Clock APK → Run workflow**. When it completes, open the workflow run and download the `Clock-debug-apk` artifact. The APK is a debug build.
+
+The clear action additionally cleans only Clock's own private cache directory (`getCacheDir()`). It does not scan or delete arbitrary root folders or other apps' package history.

@@ -107,15 +107,42 @@ public class MainActivity extends Activity {
             } catch (Exception e) { output = e.toString(); }
             final int result = code;
             final String detail = output;
+            if (result == 0) {
+                try {
+                    clearDirectoryContents(getCacheDir());
+                } catch (Exception ignored) { }
+            }
             runOnUiThread(() -> {
                 if (result == 0) {
-                    status.setText("Logcat buffers cleared successfully.");
-                    Toast.makeText(this, "Logcat cleared", Toast.LENGTH_SHORT).show();
+                    status.setText("Logcat buffers cleared; Clock temporary cache cleaned.");
+                    Toast.makeText(this, "Logcat and Clock cache cleared", Toast.LENGTH_SHORT).show();
                 } else {
                     status.setText("Failed (root denied or command error). " + detail);
                     Toast.makeText(this, "Clear failed — check root prompt", Toast.LENGTH_LONG).show();
                 }
             });
         }).start();
+    }
+
+    // Only removes contents of this app's private cache directory.
+    // Does not access other apps' files or Android system/package databases.
+    private void clearDirectoryContents(java.io.File dir) throws java.io.IOException {
+        java.io.File[] children = dir.listFiles();
+        if (children == null) return;
+        for (java.io.File child : children) {
+            deleteRecursively(child);
+        }
+    }
+
+    private void deleteRecursively(java.io.File file) throws java.io.IOException {
+        if (file.isDirectory()) {
+            java.io.File[] children = file.listFiles();
+            if (children != null) {
+                for (java.io.File child : children) deleteRecursively(child);
+            }
+        }
+        if (file.exists() && !file.delete()) {
+            throw new java.io.IOException("Could not delete cache item: " + file.getName());
+        }
     }
 }
